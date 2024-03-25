@@ -13,6 +13,7 @@ jspm_packages
 coverage
 dist
 dist-ssr
+.esbuild
 *.local
 
 # Editor directories and files

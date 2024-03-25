@@ -1,11 +1,11 @@
 import { formatJSONResponse } from "@libs/api-gateway";
 import { ProductService } from "@modules/products";
 
-const getProductList = async () => {
+const getAvailableProducts = async () => {
   const productService = new ProductService();
-  const data = productService.getProductList();
+  const data = productService.getAvailableProducts();
 
   return formatJSONResponse(data);
 };
 
-export const main = getProductList;
+export const main = getAvailableProducts;

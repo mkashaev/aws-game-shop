@@ -9,9 +9,13 @@ export type ValidatedEventAPIGatewayProxyEvent<S> = Handler<
   APIGatewayProxyResult
 >;
 
-export const formatJSONResponse = (response: Record<string, unknown>) => {
+export const formatJSONResponse = (response: Record<string, unknown> | unknown[]) => {
   return {
     statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
+    },
     body: JSON.stringify(response),
   };
 };
@@ -19,6 +23,10 @@ export const formatJSONResponse = (response: Record<string, unknown>) => {
 export const formatJSONNotFoundError = (message: string) => {
   return {
     statusCode: 404,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
+    },
     body: JSON.stringify({ message }),
   };
 };

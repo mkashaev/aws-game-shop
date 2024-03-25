@@ -12,10 +12,7 @@ const getProductById = async (event) => {
     return formatJSONNotFoundError(`Product with id: ${productId} is not found`);
   }
 
-  return formatJSONResponse({
-    data: productService.getProductById(productId),
-    event,
-  });
+  return formatJSONResponse(productService.getProductById(productId));
 };
 
 export const main = getProductById;

@@ -1,4 +1,4 @@
-import { Product } from "./types";
+import { AvailableProduct, Product } from "./types";
 
 export const products: Product[] = [
   {
@@ -38,3 +38,8 @@ export const products: Product[] = [
     title: "ProductName",
   },
 ];
+
+export const availableProducts: AvailableProduct[] = products.map((product, index) => ({
+  ...product,
+  count: index + 1,
+}));

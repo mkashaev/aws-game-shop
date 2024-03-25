@@ -5,6 +5,8 @@
   "main": "serverless.ts",
   "scripts": {
     "dev": "sls offline",
+    "deploy": "sls deploy",
+    "remove": "sls remove",
     "test": "jest"
   },
   "engines": {

@@ -4,3 +4,7 @@ export type Product = {
   description: string;
   price: number;
 };
+
+export type AvailableProduct = {
+  count: number;
+} & Product;
