@@ -3,7 +3,7 @@ import { ProductService } from "@modules/products";
 
 const getProductList = async () => {
   try {
-    const productService = new ProductService();
+    const productService = new ProductService({});
     const data = await productService.getProductList();
     return formatJSONResponse(data);
   } catch (err) {

@@ -20,6 +20,17 @@ export const formatJSONResponse = (response: Record<string, unknown> | unknown[]
   };
 };
 
+export const formatJSONPayloadError = (message: string) => {
+  return {
+    statusCode: 400,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
+    },
+    body: JSON.stringify({ error: message }),
+  };
+};
+
 export const formatJSONNotFoundError = (message: string) => {
   return {
     statusCode: 404,
