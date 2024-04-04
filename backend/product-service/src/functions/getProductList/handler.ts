@@ -1,11 +1,14 @@
-import { formatJSONResponse } from "@libs/api-gateway";
+import { formatJSONResponse, formatJSONServerError } from "@libs/api-gateway";
 import { ProductService } from "@modules/products";
 
 const getProductList = async () => {
-  const productService = new ProductService();
-  const data = productService.getProductList();
-
-  return formatJSONResponse(data);
+  try {
+    const productService = new ProductService({});
+    const data = await productService.getProductList();
+    return formatJSONResponse(data);
+  } catch (err) {
+    return formatJSONServerError("Product list server error");
+  }
 };
 
 export const main = getProductList;

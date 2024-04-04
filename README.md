@@ -1,10 +1,9 @@
 CloudFront Public Url:
-https://d3uqc3dpgau2ah.cloudfront.net/
+https://d8hsczd0ntvni.cloudfront.net/
 
-S3 Bucket Private Url:
-http://marat-game-store-sls.s3-website-eu-west-1.amazonaws.com/
 
 Lambda endpoints:
-GET - https://7srob04912.execute-api.eu-west-1.amazonaws.com/dev/products
-GET - https://7srob04912.execute-api.eu-west-1.amazonaws.com/dev/product/{productId}
-GET - https://7srob04912.execute-api.eu-west-1.amazonaws.com/dev/product/available
+GET - https://xyv86z0c28.execute-api.eu-west-1.amazonaws.com/dev/products
+GET - https://xyv86z0c28.execute-api.eu-west-1.amazonaws.com/dev/product/{productId}
+GET - https://xyv86z0c28.execute-api.eu-west-1.amazonaws.com/dev/product/available
+POST - https://xyv86z0c28.execute-api.eu-west-1.amazonaws.com/dev/products
