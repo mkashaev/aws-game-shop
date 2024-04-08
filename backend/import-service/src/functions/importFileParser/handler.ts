@@ -2,7 +2,7 @@ import { CloudWatchLogs } from "@aws-sdk/client-cloudwatch-logs";
 import { S3Client } from "@aws-sdk/client-s3";
 import { EventAPIGateway, formatJSONResponse, formatJSONServerError } from "@libs/api-gateway";
 import { BodyType, QueryType, RecordType } from "./schema";
-import { getProductRecords, readOrCreateLogStream } from "./utils";
+import { getProductRecords, mvObject, readOrCreateLogStream } from "./utils";
 
 const REGION = "eu-west-1";
 
@@ -40,6 +40,8 @@ const importProductsFile: EventAPIGateway<BodyType, QueryType, RecordType[]> = a
       };
       await logsClient.putLogEvents(params);
     }
+
+    await mvObject({ client: s3Client, bucketName, objectKey });
 
     return formatJSONResponse({ msg: "Success" });
   } catch (err) {

@@ -5,7 +5,12 @@ import {
   DescribeLogGroupsCommand,
   DescribeLogStreamsCommand,
 } from "@aws-sdk/client-cloudwatch-logs";
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  CopyObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import { parse } from "csv-parse";
 import { Stream } from "stream";
 
@@ -120,3 +125,28 @@ export async function getProductRecords({
 
   return parseCSVStream(result[0]);
 }
+
+type MvObjectArgs = {
+  client: S3Client;
+  bucketName: string;
+  objectKey: string;
+};
+
+export const mvObject = async ({ client, bucketName, objectKey }: MvObjectArgs) => {
+  const newKey = objectKey.replace("uploaded/", "parsed/");
+
+  await client.send(
+    new CopyObjectCommand({
+      Bucket: bucketName,
+      CopySource: encodeURIComponent(`${bucketName}/${objectKey}`),
+      Key: newKey,
+    })
+  );
+
+  await client.send(
+    new DeleteObjectCommand({
+      Bucket: bucketName,
+      Key: objectKey,
+    })
+  );
+};

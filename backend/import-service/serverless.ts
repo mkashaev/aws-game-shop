@@ -4,7 +4,6 @@ import importProductsFile from "@functions/importProductsFile";
 import importFileParser from "@functions/importFileParser";
 
 const REGION = "eu-west-1";
-// const ACCOUNT_ID = "513442799406";
 const BUCKET_NAME = "game-shop-app-a8f5390a1732";
 
 const serverlessConfiguration: AWS = {
@@ -28,7 +27,7 @@ const serverlessConfiguration: AWS = {
         statements: [
           {
             Effect: "Allow",
-            Action: ["s3:PutObject", "s3:GetObject"],
+            Action: ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"],
             Resource: `arn:aws:s3:::${BUCKET_NAME}/*`,
           },
           {
