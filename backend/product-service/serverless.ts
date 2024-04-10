@@ -4,6 +4,7 @@ import getProductList from "@functions/getProductList";
 import getProductById from "@functions/getProductById";
 import getAvailableProducts from "@functions/getAvailableProducts";
 import createProduct from "@functions/createProduct";
+import catalogBatchProcess from "@functions/catalogBatchProcess";
 
 const REGION = "eu-west-1";
 const ACCOUNT_ID = "513442799406";
@@ -25,6 +26,7 @@ const serverlessConfiguration: AWS = {
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       PRODUCTS_TABLE_NAME: "products-prod",
       STOCKS_TABLE_NAME: "stocks-prod",
+      CREATE_PRODUCT_TOPIC_ARN: "arn:aws:sns:eu-west-1:513442799406:createProductTopic",
     },
     iam: {
       role: {
@@ -45,11 +47,40 @@ const serverlessConfiguration: AWS = {
               `arn:aws:dynamodb:${REGION}:${ACCOUNT_ID}:table/stocks-prod`,
             ],
           },
+          {
+            Effect: "Allow",
+            Action: ["sqs:ReceiveMessage", "sqs:DeleteMessage", "sqs:GetQueueAttributes"],
+            Resource: {
+              "Fn::GetAtt": ["catalogItemsQueue", "Arn"],
+            },
+          },
+          {
+            Effect: "Allow",
+            Action: [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogGroups",
+              "logs:DescribeLogStreams",
+            ],
+            Resource: "arn:aws:logs:*:*:*",
+          },
+          {
+            Effect: "Allow",
+            Action: "sns:Publish",
+            Resource: "arn:aws:sns:eu-west-1:513442799406:createProductTopic",
+          },
         ],
       },
     },
   },
-  functions: { getProductList, getProductById, getAvailableProducts, createProduct },
+  functions: {
+    getProductList,
+    getProductById,
+    getAvailableProducts,
+    createProduct,
+    catalogBatchProcess,
+  },
   package: { individually: true },
   custom: {
     esbuild: {
@@ -81,6 +112,28 @@ const serverlessConfiguration: AWS = {
           AttributeDefinitions: [{ AttributeName: "product_id", AttributeType: "S" }],
           KeySchema: [{ AttributeName: "product_id", KeyType: "HASH" }],
           BillingMode: "PAY_PER_REQUEST",
+        },
+      },
+      catalogItemsQueue: {
+        Type: "AWS::SQS::Queue",
+        Properties: {
+          QueueName: "catalogItemsQueue",
+        },
+      },
+      createProductTopic: {
+        Type: "AWS::SNS::Topic",
+        Properties: {
+          TopicName: "createProductTopic",
+        },
+      },
+      createProductTopicSubscription: {
+        Type: "AWS::SNS::Subscription",
+        Properties: {
+          Protocol: "email",
+          Endpoint: "kashaevmt@gmail.com",
+          TopicArn: {
+            Ref: "createProductTopic",
+          },
         },
       },
     },
