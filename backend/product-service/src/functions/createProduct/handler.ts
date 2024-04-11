@@ -24,7 +24,6 @@ const createProduct = async (event) => {
     }
 
     const productService = new ProductService({});
-    console.log("1");
     const data = await productService.createProduct(product);
     return formatJSONResponse(data);
   } catch (err) {

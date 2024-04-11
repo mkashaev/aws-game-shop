@@ -27,6 +27,7 @@ const serverlessConfiguration: AWS = {
       PRODUCTS_TABLE_NAME: "products-prod",
       STOCKS_TABLE_NAME: "stocks-prod",
       CREATE_PRODUCT_TOPIC_ARN: "arn:aws:sns:eu-west-1:513442799406:createProductTopic",
+      CATALOG_ITEMS_QUEUE: "arn:aws:sqs:eu-west-1:513442799406:catalogItemsQueue",
     },
     iam: {
       role: {
@@ -133,6 +134,19 @@ const serverlessConfiguration: AWS = {
           Endpoint: "kashaevmt@gmail.com",
           TopicArn: {
             Ref: "createProductTopic",
+          },
+        },
+      },
+      filteredProductTopicSubscription: {
+        Type: "AWS::SNS::Subscription",
+        Properties: {
+          Protocol: "email",
+          Endpoint: "kashaevmt2@gmail.com",
+          TopicArn: {
+            Ref: "createProductTopic",
+          },
+          FilterPolicy: {
+            title: ["Filter product"],
           },
         },
       },

@@ -76,8 +76,6 @@ export class ProductService {
 
     const result = await Promise.all([productPromise, stockPromise]);
 
-    console.log({ result: [result[0].Item, result[1].Item] });
-
     if (!result[0].Item) {
       return null;
     }
