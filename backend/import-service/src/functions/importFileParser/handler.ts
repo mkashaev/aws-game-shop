@@ -1,22 +1,17 @@
-import { CloudWatchLogs } from "@aws-sdk/client-cloudwatch-logs";
 import { S3Client } from "@aws-sdk/client-s3";
+import { SendMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 import { EventAPIGateway, formatJSONResponse, formatJSONServerError } from "@libs/api-gateway";
 import { BodyType, QueryType, RecordType } from "./schema";
-import { getProductRecords, mvObject, readOrCreateLogStream } from "./utils";
+import { getProductRecords, mvObject } from "./utils";
 
 const REGION = "eu-west-1";
+const QUEUE_URL = "https://sqs.eu-west-1.amazonaws.com/513442799406/catalogItemsQueue";
 
-const logsClient = new CloudWatchLogs({ region: REGION });
 const s3Client = new S3Client({ region: REGION });
+const sqsClient = new SQSClient({ region: REGION });
 
 const importProductsFile: EventAPIGateway<BodyType, QueryType, RecordType[]> = async (event) => {
-  const logGroupName = "/aws/lambda/importFileParse";
-  const logStreamName = "products-log-stream";
-
   try {
-    let params;
-    let message;
-
     const record = event.Records[0];
 
     const bucketName = record.s3.bucket.name;
@@ -24,21 +19,12 @@ const importProductsFile: EventAPIGateway<BodyType, QueryType, RecordType[]> = a
 
     const products = await getProductRecords({ client: s3Client, bucketName, objectKey });
 
-    await readOrCreateLogStream(logsClient, logGroupName, logStreamName);
-
     for (let product of products) {
-      message = JSON.stringify(product, null, 2);
-      params = {
-        logEvents: [
-          {
-            message,
-            timestamp: new Date().getTime(),
-          },
-        ],
-        logGroupName,
-        logStreamName,
-      };
-      await logsClient.putLogEvents(params);
+      const command = new SendMessageCommand({
+        QueueUrl: QUEUE_URL,
+        MessageBody: JSON.stringify(product),
+      });
+      await sqsClient.send(command);
     }
 
     await mvObject({ client: s3Client, bucketName, objectKey });
