@@ -6,7 +6,19 @@ export default {
     {
       http: {
         method: "post",
-        path: "test-auth",
+        path: "auth",
+        cors: {
+          origin: "*",
+          headers: [
+            "Content-Type",
+            "X-Amz-Date",
+            "Authorization",
+            "X-Api-Key",
+            "X-Amz-Security-Token",
+            "*",
+          ],
+          allowCredentials: true,
+        },
       },
     },
   ],

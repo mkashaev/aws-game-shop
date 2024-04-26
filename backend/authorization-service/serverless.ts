@@ -2,13 +2,16 @@ import type { AWS } from "@serverless/typescript";
 
 import basicAuthorizer from "@functions/basicAuthorizer";
 
+const REGION = "eu-west-1";
+
 const serverlessConfiguration: AWS = {
   service: "authorization-service",
   frameworkVersion: "3",
-  plugins: ["serverless-esbuild", "serverless-dotenv-plugin"],
+  plugins: ["serverless-esbuild", "serverless-dotenv-plugin", "serverless-offline"],
   provider: {
     name: "aws",
     runtime: "nodejs18.x",
+    region: REGION,
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -32,6 +35,24 @@ const serverlessConfiguration: AWS = {
       define: { "require.resolve": undefined },
       platform: "node",
       concurrency: 10,
+    },
+  },
+  resources: {
+    Resources: {
+      GatewayResponseDefault4XX: {
+        Type: "AWS::ApiGateway::GatewayResponse",
+        Properties: {
+          ResponseParameters: {
+            "gatewayresponse.header.Access-Control-Allow-Origin": "'*'",
+            "gatewayresponse.header.Access-Control-Allow-Headers":
+              "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+          },
+          ResponseType: "DEFAULT_4XX",
+          RestApiId: {
+            Ref: "ApiGatewayRestApi",
+          },
+        },
+      },
     },
   },
 };
