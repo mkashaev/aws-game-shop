@@ -6,7 +6,6 @@ const serverlessConfiguration: AWS = {
   service: 'nestjs-app',
   frameworkVersion: '3',
   plugins: [
-    // 'serverless-webpack',
     'serverless-offline',
     'serverless-dotenv-plugin'
   ],
@@ -62,10 +61,6 @@ const serverlessConfiguration: AWS = {
         `./configs/.env.${process.env.NODE_ENV}`
       ],
     },
-    // webpack: {
-    //   webpackConfig: './webpack.config.js',
-    //   includeModules: true,
-    // },
   },
 };
 
