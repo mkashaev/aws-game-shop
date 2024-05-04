@@ -1,28 +1,27 @@
 import { Injectable } from '@nestjs/common';
-
-import { v4 } from 'uuid';
-
-import { User } from '../models';
+import { eq } from 'drizzle-orm';
+import { Users } from 'src/db/schemas';
+import { DrizzleService } from 'src/drizzle.service';
 
 @Injectable()
 export class UsersService {
-  private readonly users: Record<string, User>;
+  constructor(readonly drizzle: DrizzleService) {}
 
-  constructor() {
-    this.users = {}
+  async findOne(userId: string) {
+    return this.drizzle.db.query.Users.findFirst({
+      where: eq(Users.id, userId),
+    });
   }
 
-  findOne(userId: string): User {
-    return this.users[ userId ];
+  async createOne(name: string, password: string) {
+    return (
+      await this.drizzle.db
+        .insert(Users)
+        .values({
+          name,
+          password,
+        })
+        .returning()
+    )[0];
   }
-
-  createOne({ name, password }: User): User {
-    const id = v4(v4());
-    const newUser = { id: name || id, name, password };
-
-    this.users[ id ] = newUser;
-
-    return newUser;
-  }
-
 }

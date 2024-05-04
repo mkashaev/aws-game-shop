@@ -18,7 +18,7 @@ export class AuthService {
       return user;
     }
 
-    return this.usersService.createOne({ name, password })
+    return this.usersService.createOne(name, password)
   }
 
   login(user: User, type) {
