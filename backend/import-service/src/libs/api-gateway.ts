@@ -17,6 +17,9 @@ export const formatJSONResponse = (response: Record<string, unknown>) => {
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Credentials": true,
+      "Access-Control-Allow-Methods": "GET,POST",
+      "Access-Control-Allow-Headers": "*",
+      "Access-Control-Expose-Headers": "*",
     },
     body: JSON.stringify(response),
   };

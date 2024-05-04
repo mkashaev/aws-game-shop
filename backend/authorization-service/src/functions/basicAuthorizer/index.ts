@@ -5,12 +5,8 @@ export default {
   events: [
     {
       http: {
-        method: "get",
-        path: "import",
-        authorizer: {
-          type: "REQUEST",
-          arn: "arn:aws:lambda:eu-west-1:513442799406:function:authorization-service-dev-basicAuthorizer",
-        },
+        method: "post",
+        path: "auth",
         cors: {
           origin: "*",
           headers: [
